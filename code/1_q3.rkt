@@ -29,3 +29,28 @@
   (and (not (empty-tree? tree))
        (empty-tree? (tree-left tree))
        (empty-tree? (tree-right tree))))
+
+;; (inorder-acc tree acc) -> the inorder list of tree followed by acc.
+;; Base case: the empty tree adds nothing, so the result is acc.
+;; Recursive case: first put the right subtree's inorder list in front of
+;; acc, then cons the node's value in front of that, then put the left
+;; subtree's inorder list in front of everything. Walking right before left
+;; means each cons adds to the front and the final list is in order,
+;; with no append.
+(define (inorder-acc tree acc)
+  (if (empty-tree? tree)
+      acc
+      (inorder-acc (tree-left tree)
+                   (cons (tree-value tree)
+                         (inorder-acc (tree-right tree) acc)))))
+
+;; (inorder-list tree) -> list of the values of tree in inorder
+;; (left subtree, node, right subtree). Starts the accumulator at ().
+(define (inorder-list tree)
+  (inorder-acc tree '()))
+
+;; (print-inorder tree) displays the inorder list of tree on one line,
+;; then a newline. The empty tree prints ().
+(define (print-inorder tree)
+  (display (inorder-list tree))
+  (newline))
