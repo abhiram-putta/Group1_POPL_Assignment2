@@ -109,3 +109,18 @@ generate_equation(List, Equation) :-
     expr_string(LTree, LString),
     expr_string(RTree, RString),
     format(string(Equation), "~w=~w", [LString, RString]).
+
+%% all_equations(+List, -Equations)
+%  all_equations(L, Es) is true when Es is the list of all valid equation
+%  strings for L (as given by generate_equation/2), without duplicates and
+%  in standard order of terms. Es = [] if there are none.
+all_equations(List, Equations) :-
+    findall(Equation, generate_equation(List, Equation), All),
+    sort(All, Equations).
+
+%% count_equations(+List, -N)
+%  count_equations(L, N) is true when N is the number of valid equations
+%  for L, i.e. the length of the list given by all_equations(L, Es).
+count_equations(List, N) :-
+    all_equations(List, Equations),
+    length(Equations, N).
