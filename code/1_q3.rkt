@@ -54,3 +54,37 @@
 (define (print-inorder tree)
   (display (inorder-list tree))
   (newline))
+
+;; (preorder-acc tree acc) -> the preorder list of tree followed by acc.
+;; Base case: the empty tree adds nothing, so the result is acc.
+;; Recursive case: the right subtree's preorder list goes in front of acc,
+;; then the left subtree's in front of that, and the node's value is
+;; consed at the very front (node, left, right).
+(define (preorder-acc tree acc)
+  (if (empty-tree? tree)
+      acc
+      (cons (tree-value tree)
+            (preorder-acc (tree-left tree)
+                          (preorder-acc (tree-right tree) acc)))))
+
+;; (preorder-list tree) -> list of the values of tree in preorder
+;; (node, left subtree, right subtree). Starts the accumulator at ().
+(define (preorder-list tree)
+  (preorder-acc tree '()))
+
+;; (postorder-acc tree acc) -> the postorder list of tree followed by acc.
+;; Base case: the empty tree adds nothing, so the result is acc.
+;; Recursive case: the node's value is consed onto acc first (it comes
+;; last), then the right subtree's postorder list goes in front of it,
+;; then the left subtree's (left, right, node).
+(define (postorder-acc tree acc)
+  (if (empty-tree? tree)
+      acc
+      (postorder-acc (tree-left tree)
+                     (postorder-acc (tree-right tree)
+                                    (cons (tree-value tree) acc)))))
+
+;; (postorder-list tree) -> list of the values of tree in postorder
+;; (left subtree, right subtree, node). Starts the accumulator at ().
+(define (postorder-list tree)
+  (postorder-acc tree '()))
