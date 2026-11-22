@@ -94,3 +94,18 @@ operand_string(Side, Tree, ParentPrec, String) :-
 %  right when P =< PP.
 needs_parens(left, Prec, ParentPrec) :- Prec < ParentPrec.
 needs_parens(right, Prec, ParentPrec) :- Prec =< ParentPrec.
+
+%% generate_equation(+List, -Equation)
+%  generate_equation(L, E) is true when E is a string "Left=Right" with no
+%  spaces, where Left is an expression over a non-empty prefix of L, Right
+%  is an expression over the remaining non-empty suffix, and both have the
+%  same integer value. On backtracking it gives every valid equation once.
+%  Fails, without error, if there is none (including lists of length 0 or 1).
+generate_equation(List, Equation) :-
+    split_list(List, Left, Right),
+    expr(Left, LTree, Value),
+    expr(Right, RTree, RValue),
+    Value =:= RValue,
+    expr_string(LTree, LString),
+    expr_string(RTree, RString),
+    format(string(Equation), "~w=~w", [LString, RString]).
