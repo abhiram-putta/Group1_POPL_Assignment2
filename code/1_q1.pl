@@ -51,3 +51,30 @@ attribute_perm(Attr, Perm) :-
 %  set_attrs(P, D, L, Pr) is true when P is a p/4 term whose department,
 %  language and project are D, L and Pr.
 set_attrs(p(_, D, L, P), D, L, P).         
+
+%% clue(+N, +Solution)
+%  clue(N, S) is true when clue number N holds in the fully filled-in
+%  solution S.
+
+% CLUE 1: The friend who prefers the AI project does not work in research
+% and is not Dana.
+clue(1, S) :-
+    member(p(_, _, _, 'AI'), S),
+    \+ member(p(_, research, _, 'AI'), S),
+    \+ member(p('Dana', _, _, 'AI'), S).
+
+% CLUE 2: Alex does not work in development and does not prefer C++.
+clue(2, S) :-
+    member(p('Alex', _, _, _), S),
+    \+ member(p('Alex', development, _, _), S),
+    \+ member(p('Alex', _, 'c++', _), S).
+
+% CLUE 3: The friend working in the testing department likes Python.
+clue(3, S) :-
+    member(p(_, testing, python, _), S).
+
+% CLUE 4: Ben prefers web projects and does not work in testing.
+clue(4, S) :-
+    member(p('Ben', _, _, web), S),
+    \+ member(p('Ben', testing, _, _), S).
+    
