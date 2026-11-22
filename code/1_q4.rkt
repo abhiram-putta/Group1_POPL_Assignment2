@@ -62,4 +62,26 @@
          (n (read)))
     (display (insert-if-short x lst n))
     (newline)))
-    
+
+;; (make-inserter x len-ok?) -> a function (insert lst) that returns lst with
+;;   x put at the front of every list (lst itself and every nested list,
+;;   () included) whose original length satisfies len-ok?
+;; insert's base case: an atom element is returned unchanged; () has no
+;;   elements, so my-map gives () and x is added if (len-ok? 0).
+;; insert's recursive case: rebuild each sublist element with insert (smaller
+;;   structure), keep atoms; then cons x on the front if (len-ok? (my-length
+;;   lst)), measured on the original lst, not the rebuilt list.
+(define (make-inserter x len-ok?)
+  (letrec ((insert
+            (lambda (lst)
+              (let ((new-lst (my-map (lambda (e)
+                                       (if (sublist? e)
+                                           (insert e)
+                                           e))
+                                     lst)))
+                (if (len-ok? (my-length lst))
+                    (cons x new-lst)
+                    new-lst)))))
+    insert))
+
+
