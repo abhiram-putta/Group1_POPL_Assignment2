@@ -42,13 +42,15 @@ description: Rules for writing, testing and reviewing SWI-Prolog 9.x code for ab
 - When output is required, match the expected format exactly (spacing, newlines, brackets, quotes).
 
 ## 4. How to run and test
-- Repository layout: solution files live in `code/` (`code/1_q1.pl`, `code/1_q2.pl`) and test files live in `tests/`. Run every command from the repository's top folder.
+- Repository layout: solution files live in `code/` (`code/1_q1.pl`, `code/1_q2.pl`) and test files live in `tests/` (`tests/test_q1.pl`, `tests/test_q2.pl`).
+- Run every command from the repository's top folder.
 - Load and check for warnings:
   `swipl -q -f code/1_q1.pl -g true -t halt`
-- Run main:
+  `swipl -q -f code/1_q2.pl -g true -t halt`
+- Run main (q1 only; q2 has no `main/0`, so run its predicates with `-g "<goal>"`):
   `swipl -q -f code/1_q1.pl -g main -t halt`
 - Run one goal:
-  `swipl -q -f code/1_q1.pl -g "my_pred(+In, Out), print_result(Out)" -t halt`
+  `swipl -q -f code/1_q1.pl -g "my_pred(In, Out), write(Out), nl" -t halt`
 - Check that a goal leaves no choice point: in `swipl code/1_q1.pl`, run the query; if it ends with `true.` it is deterministic, if it waits after `true` (`;` prompt) it left a choice point.
 - Tests use plunit in a separate file under `tests/`, e.g. `tests/test_q1.pl`:
   ```prolog
@@ -62,9 +64,10 @@ description: Rules for writing, testing and reviewing SWI-Prolog 9.x code for ab
   test(fails, [fail]) :- count_vowels(abc, 5).
   :- end_tests(count_vowels).
   ```
-  plunit is only used in tests, never in the solution file.
+  `tests/test_q2.pl` is the same, but consults `'../code/1_q2.pl'`. plunit is only used in tests, never in the solution files.
 - Run the tests:
   `swipl -q -g run_tests -t halt tests/test_q1.pl`
+  `swipl -q -g run_tests -t halt tests/test_q2.pl`
 - Each test file covers: a normal case, an edge case (empty list, zero, empty atom), a failure case, and determinism (plunit warns about choice points unless the test says `nondet`).
 
 ## 5. Self-review checklist (go through every item before every answer)
@@ -87,7 +90,7 @@ description: Rules for writing, testing and reviewing SWI-Prolog 9.x code for ab
 - **Negation on unbound variables.** `\+ member(X, L)` with X unbound means "L is empty", not "X is not in L". Bind X first, then negate. `\+` never binds anything.
 - **`is/2` before variables are bound.** `X is Y + 1` with Y unbound raises an instantiation error. Order goals so inputs are bound first, especially in accumulator code where the recursive call must come after the arithmetic, or the arithmetic after the recursive call, depending on data flow.
 - **`=` vs `is` vs `=:=`.** `X = 1+2` gives the term `1+2`, not 3. Use `is` to compute, `=:=` to compare numbers, `==` to compare terms without binding.
-- **Quotes from `writeq` and `print`.** `writeq('AI')` prints `'AI'`, `print('c++')` prints `'c++'`. For plain output use `write/1` or `format("~w", [X])`. Use `~a` only for atoms. `print/1` goes through `portray_clause`-style quoting, so avoid it for output.
+- **Quotes from `writeq` and `print`.** `writeq('AI')` prints `'AI'`, `print('c++')` prints `'c++'`. For plain output use `write/1` or `format("~w", [X])`. Use `~a` only for atoms. `print/1` quotes like `writeq`, so avoid it for output.
 - **Strings vs atoms vs code lists.** In SWI-Prolog 9, `"abc"` is a string, not a code list. Do not mix them up; use `atom_chars/2`, `atom_codes/2`, `atom_string/2`, `number_codes/2` deliberately.
 - **Infinite left recursion.** `ancestor(X, Z) :- ancestor(X, Y), parent(Y, Z).` loops. Put the base case first and a non-recursive goal before the recursive call.
 - **Non-termination in other modes.** `length(L, N)` or `append(X, Y, Z)` with too few bound arguments can produce infinite answers. Only promise the modes that terminate.
