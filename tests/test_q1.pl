@@ -89,12 +89,34 @@ test(four_lines_in_order) :-
 
 :- end_tests(main_output).
 
-% ===============================================================
-% TODO (add later): count_solutions/2 tests (P1.b)
-% e.g. count_solutions([1,2,3,4,5,6,7,8], N) gives N = 3
-% ===============================================================
+% ---------------------------------------------------------------
+% count_solutions/2 tests (P1.b)
+% ---------------------------------------------------------------
+:- begin_tests(count_solutions).
 
-% ===============================================================
-% TODO (add later): clue 9 tests (P1.c)
-% e.g. count_solutions([1,2,3,4,5,6,7,8,9], N) gives N = 1
-% ===============================================================
+test(no_clues, [true(N =:= 13824)]) :-
+    count_solutions([], N).
+
+test(clue4_only, [true(N =:= 2592)]) :-
+    count_solutions([4], N).
+
+test(clue5_only, [true(N =:= 3456)]) :-
+    count_solutions([5], N).
+
+test(clues_1_to_8, [true(N =:= 3)]) :-
+    count_solutions([1, 2, 3, 4, 5, 6, 7, 8], N).
+
+:- end_tests(count_solutions).
+
+% ---------------------------------------------------------------
+% clue 9 tests (P1.c)
+% ---------------------------------------------------------------
+:- begin_tests(clue9).
+
+test(clues_1_to_9_unique, [true(N =:= 1)]) :-
+    count_solutions([1, 2, 3, 4, 5, 6, 7, 8, 9], N).
+
+test(clue9_keeps_one_solve_solution, [true(C =:= 1)]) :-
+    aggregate_all(count, (solve(S), clue(9, S)), C).
+
+:- end_tests(clue9).
