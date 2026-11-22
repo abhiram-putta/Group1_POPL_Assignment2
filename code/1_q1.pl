@@ -102,3 +102,16 @@ clue(7, S) :-
 clue(8, S) :-
     member(p(_, research, _, data), S),
     \+ member(p(_, _, javascript, data), S).    
+
+%% solve(-Solution)
+%  solve(S) is true when S is a filled-in assignment of departments,
+%  languages and projects that satisfies clues 1 to 8.
+%  On backtracking it gives every such assignment.
+solve(S) :-
+    fill(S),
+    maplist(holds_clue(S), [1, 2, 3, 4, 5, 6, 7, 8]).
+
+%% holds_clue(+Solution, +N)
+%  holds_clue(S, N) is true when clue number N holds in solution S.
+holds_clue(S, N) :-
+    clue(N, S).
