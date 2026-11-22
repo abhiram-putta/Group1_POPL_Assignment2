@@ -115,3 +115,17 @@ solve(S) :-
 %  holds_clue(S, N) is true when clue number N holds in solution S.
 holds_clue(S, N) :-
     clue(N, S).
+
+%% main
+%  main is true when the first solution of solve/1 has been printed as
+%  four lines "Name = [Dept, Lang, Project]", in the order Alex, Ben,
+%  Carla, Dana.
+main :-
+    once(solve(S)),
+    maplist(print_person, S).
+
+%% print_person(+Person)
+%  print_person(P) is true when the p/4 term P has been printed as one
+%  line "Name = [Dept, Lang, Project]" without quotes.
+print_person(p(Name, Dept, Lang, Project)) :-
+    format("~w = [~w, ~w, ~w]~n", [Name, Dept, Lang, Project]).    
