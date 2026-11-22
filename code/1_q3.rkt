@@ -99,3 +99,35 @@
   (newline)
   (display (postorder-list tree))
   (newline))
+
+;; (tree-height tree) -> the height of tree.
+;; Base case: the empty tree has height 0.
+;; Recursive case: a node has height 1 plus the larger of the heights of
+;; its left and right subtrees, so a single node has height 1.
+(define (tree-height tree)
+  (if (empty-tree? tree)
+      0
+      (+ 1 (max (tree-height (tree-left tree))
+                (tree-height (tree-right tree))))))
+
+;; (leaves-acc tree acc) -> acc plus the number of leaves in tree.
+;; Base case: the empty tree has no leaves, so the result is acc; a leaf
+;; adds one to acc.
+;; Recursive case: count the right subtree's leaves into acc, then pass
+;; that count on as the accumulator for the left subtree (the call on the
+;; left subtree is a tail call).
+(define (leaves-acc tree acc)
+  (cond ((empty-tree? tree) acc)
+        ((leaf? tree) (+ acc 1))
+        (else (leaves-acc (tree-left tree)
+                          (leaves-acc (tree-right tree) acc)))))
+
+;; (count-leaves tree) -> number of leaves in tree. Starts acc at 0.
+(define (count-leaves tree)
+  (leaves-acc tree 0))
+
+;; (print-height-and-leaves tree) displays the list (height leaf-count)
+;; on one line, then a newline. The empty tree prints (0 0).
+(define (print-height-and-leaves tree)
+  (display (list (tree-height tree) (count-leaves tree)))
+  (newline))
