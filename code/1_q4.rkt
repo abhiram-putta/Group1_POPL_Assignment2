@@ -11,7 +11,6 @@
         acc
         (loop (cdr rest-lst) (+ acc 1)))))
 
-
 ;; (my-reverse lst) -> the top-level elements of lst in reverse order
 ;; Base case: () gives acc (acc starts as ()).
 ;; Recursive case: cons (car lst) onto acc and reverse (cdr lst) into it.
@@ -32,4 +31,25 @@
         (my-reverse acc)
         (loop (cdr rest-lst) (cons (f (car rest-lst)) acc)))))
 
+;; (sublist? e) -> #t if e is a list (empty or not), #f if e is an atom
+;; No recursion: () and pairs are lists, everything else is an atom.
+(define (sublist? e)
+  (or (null? e) (pair? e)))
+
+;; (insert-if-short x lst n) -> lst with x put at the front of every list
+;;   (lst itself and every nested list, () included) whose original length < n
+;; Base case: an atom element is returned unchanged; () has no elements, so
+;;   my-map gives () and x is added if 0 < n.
+;; Recursive case: rebuild each sublist element with insert-if-short (smaller
+;;   structure), keep atoms; then cons x on the front if (my-length lst) < n,
+;;   where lst is the original, not the rebuilt list.
+(define (insert-if-short x lst n)
+  (let ((new-lst (my-map (lambda (e)
+                           (if (sublist? e)
+                               (insert-if-short x e n)
+                               e))
+                         lst)))
+    (if (< (my-length lst) n)
+        (cons x new-lst)
+        new-lst)))
         
