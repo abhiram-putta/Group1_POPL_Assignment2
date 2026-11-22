@@ -103,6 +103,10 @@ clue(8, S) :-
     member(p(_, research, _, data), S),
     \+ member(p(_, _, javascript, data), S).    
 
+% CLUE 9: The friend who works in the testing department prefers the AI project.
+clue(9, S) :-
+    member(p(_, testing, _, 'AI'), S).    
+
 %% solve(-Solution)
 %  solve(S) is true when S is a filled-in assignment of departments,
 %  languages and projects that satisfies clues 1 to 8.
