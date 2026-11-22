@@ -36,22 +36,6 @@
 (define (sublist? e)
   (or (null? e) (pair? e)))
 
-;; (insert-if-short x lst n) -> lst with x put at the front of every list
-;;   (lst itself and every nested list, () included) whose original length < n
-;; Base case: an atom element is returned unchanged; () has no elements, so
-;;   my-map gives () and x is added if 0 < n.
-;; Recursive case: rebuild each sublist element with insert-if-short (smaller
-;;   structure), keep atoms; then cons x on the front if (my-length lst) < n,
-;;   where lst is the original, not the rebuilt list.
-(define (insert-if-short x lst n)
-  (let ((new-lst (my-map (lambda (e)
-                           (if (sublist? e)
-                               (insert-if-short x e n)
-                               e))
-                         lst)))
-    (if (< (my-length lst) n)
-        (cons x new-lst)
-        new-lst)))
 
 ;; (print-insert-result) -> reads x, lst, n from standard input (in that
 ;;   order), displays (insert-if-short x lst n) and ends with a newline.
@@ -83,5 +67,13 @@
                     (cons x new-lst)
                     new-lst)))))
     insert))
+
+;; (insert-if-short x lst n) -> lst with x put at the front of every list
+;;   (lst itself and every nested list, () included) whose original length < n
+;; No recursion of its own: builds an inserter whose len-ok? is (< k n) and
+;;   applies it to lst; the recursion (base and recursive case) is inside
+;;   make-inserter.
+(define (insert-if-short x lst n)
+  ((make-inserter x (lambda (k) (< k n))) lst))
 
 
