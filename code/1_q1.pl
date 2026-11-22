@@ -1,5 +1,6 @@
 :- use_module(library(lists)).
 :- use_module(library(apply)).
+:- use_module(library(aggregate)).
 %% dept(?Dept)
 %  dept(D) is true when D is one of the four departments.
 dept(research).
