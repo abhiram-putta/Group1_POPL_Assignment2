@@ -116,6 +116,15 @@ solve(S) :-
 holds_clue(S, N) :-
     clue(N, S).
 
+%% count_solutions(+Active, -N)
+%  count_solutions(Active, N) is true when N is the number of filled-in
+%  solutions that satisfy every clue whose number is in Active, ignoring
+%  all other clues.
+count_solutions(Active, N) :-
+    aggregate_all(count,
+                  ( fill(S), maplist(holds_clue(S), Active) ),
+                  N).    
+
 %% main
 %  main is true when the first solution of solve/1 has been printed as
 %  four lines "Name = [Dept, Lang, Project]", in the order Alex, Ben,
