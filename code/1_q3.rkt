@@ -88,3 +88,14 @@
 ;; (left subtree, right subtree, node). Starts the accumulator at ().
 (define (postorder-list tree)
   (postorder-acc tree '()))
+
+;; (print-all-traversals tree) displays three lines: the inorder list,
+;; the preorder list and the postorder list of tree, each followed by a
+;; newline. Reuses the three list functions; no recursion of its own.
+(define (print-all-traversals tree)
+  (display (inorder-list tree))
+  (newline)
+  (display (preorder-list tree))
+  (newline)
+  (display (postorder-list tree))
+  (newline))
